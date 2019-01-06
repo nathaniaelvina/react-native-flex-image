@@ -13,24 +13,24 @@ import {
 } from 'react-native';
 
 type Cancellable = {
-  cancel: () => void,
+  cancel: () => void;
 };
 
 type Props = {
-  source: number | {uri: string, width?: number, height?: number},
-  style?: StyleType,
-  loadingComponent?: ReactNode,
-  onPress?: () => void,
-  thumbnail?: number | {uri: string, width?: number, height?: number},
-  loadingMethod?: 'spinner' | 'progressive',
-  errorComponent?: ReactNode,
+  source: number | {uri: string; width?: number; height?: number};
+  style?: StyleType;
+  loadingComponent?: ReactNode;
+  onPress?: () => void;
+  thumbnail?: number | {uri: string; width?: number; height?: number};
+  loadingMethod?: 'spinner' | 'progressive';
+  errorComponent?: ReactNode;
 };
 
 type State = {
-  isLoading: boolean,
-  ratio: ?number,
-  error: ?string,
-  thumbnailOpacity: Animated.Value,
+  isLoading: boolean;
+  ratio: ?number;
+  error: ?string;
+  thumbnailOpacity: Animated.Value;
 };
 
 export default class FlexImage extends Component<Props, State> {
@@ -61,7 +61,7 @@ export default class FlexImage extends Component<Props, State> {
       this._pendingGetSize = getImageSize(
         src,
         this._onLoadSuccess,
-        this._onLoadFail,
+        this._onLoadFail
       );
     }
 
@@ -184,13 +184,16 @@ export default class FlexImage extends Component<Props, State> {
 export function getImageSize(
   source: {uri: string},
   onSuccess: (width: number, height: number) => void,
-  onFail: (error: Error) => void,
+  onFail: (error: Error) => void
 ) {
   let isCancelled = false;
   Image.getSize(
     source.uri,
     (width: number, height: number) => {
       if (!isCancelled) {
+        if (width > 2000) {
+          onFail('Image size is too large');
+        }
         onSuccess(width, height);
       }
     },
@@ -198,7 +201,7 @@ export function getImageSize(
       if (!isCancelled) {
         onFail(error);
       }
-    },
+    }
   );
   return {
     cancel: () => {
